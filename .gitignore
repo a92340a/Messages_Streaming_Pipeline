@@ -1,7 +1,18 @@
 .venv/
-.DS_Store
+
+# python
+__pycache__/
 *.pyc
 
+# personal
 data/
 credentials/
 manual.txt
+
+# mac
+*.DS_Store
+
+# terraform
+.terraform
+.terraform.tfstate.lock.info
+*.tfstate.*
