@@ -1,12 +1,19 @@
+.venv/
+
+# python
+__pycache__/
+*.pyc
+
+# personal
+data/
+credentials/
+manual.txt
+
+# mac
 *.DS_Store
+
+# terraform
 .terraform
-
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
-
-# Ignore transient lock info files created by terraform apply
 .terraform.tfstate.lock.info
-
-# .tfstate files
 *.tfstate.*
+
