@@ -8,6 +8,7 @@ __pycache__/
 data/
 credentials/
 manual.txt
+*archive/
 
 # mac
 *.DS_Store
@@ -16,4 +17,3 @@ manual.txt
 .terraform
 .terraform.tfstate.lock.info
 *.tfstate.*
-
