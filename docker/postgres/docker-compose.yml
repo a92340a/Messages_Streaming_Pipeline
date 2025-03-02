@@ -12,6 +12,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DBNAME}
     volumes:
       - "./postgres_data:/var/lib/postgressql/data:rw"
+      - "./init_db:/docker-entrypoint-initdb.d"
     env_file:
       - .env
     ports:
@@ -21,9 +22,12 @@ services:
     image: dpage/pgadmin4
     container_name: ${PROJECT_NAME}-pgadmin
     environment:
-       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER} 
     env_file:
       - .env
     ports:
-       - "${PGADMIN_PORT}:80"
+      - "${PGADMIN_PORT}:80"
+    volumes:
+      - "./postgres_settings/servers.json:/pgadmin4/servers.json"
