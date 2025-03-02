@@ -1,8 +1,4 @@
-FROM spark-base
+FROM spark-base:latest
 
-# -- Runtime
-
-ARG spark_worker_web_ui=8081
-
-EXPOSE ${spark_worker_web_ui}
-CMD bin/spark-class org.apache.spark.deploy.worker.Worker spark://${SPARK_MASTER_HOST}:${SPARK_MASTER_PORT} >> logs/spark-worker.out
+# 指定 Spark Worker 的環境變數
+ENV SPARK_MODE=worker

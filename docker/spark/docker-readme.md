@@ -1,6 +1,4 @@
-# -- Software Stack Version
-SPARK_VERSION="3.3.1"
-HADOOP_VERSION="3"
+
 
 # -- Building the Images
 
