@@ -1,0 +1,13 @@
+networks:
+  default:
+    name: ${PROJECT_NAME}-network
+    external: true
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ${PROJECT_NAME}-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090" # Prometheus web UI
+    restart: always
