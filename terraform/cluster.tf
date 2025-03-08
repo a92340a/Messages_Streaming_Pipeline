@@ -4,6 +4,10 @@ resource "google_container_cluster" "my_cluster" {
   name     = "cluster-1"
   project  = var.project_id
   location = var.location
+  initial_node_count = 1
+  deletion_protection = false
+
+  
   default_snat_status {
     disabled = false
   }
@@ -49,6 +53,16 @@ resource "google_container_cluster" "my_cluster" {
     cidr_blocks {
       cidr_block   = "125.227.248.241/32"
       display_name = "cm"
+    }
+    
+    cidr_blocks {
+      cidr_block   = "42.77.243.251/32"
+      display_name = "mobile"
+    }
+    
+    cidr_blocks {
+      cidr_block   = "180.177.8.10/32"
+      display_name = "home"
     }
   }
 
