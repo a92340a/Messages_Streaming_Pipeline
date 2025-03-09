@@ -29,7 +29,7 @@ spec:
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
               value: "PLAINTEXT"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka:9092"
+              value: "PLAINTEXT://kafka-service:9092"
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
               value: "true"
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -64,12 +64,7 @@ spec:
             - containerPort: 2181
           env:
             - name: ZOOKEEPER_CLIENT_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: zookeeper-config
-                  key: ZOOKEEPER_CLIENT_PORT
+              value: "2181"
+
             - name: ZOOKEEPER_TICK_TIME
-              valueFrom:
-                configMapKeyRef:
-                  name: zookeeper-config
-                  key: ZOOKEEPER_TICK_TIME
+              value: "2000"
