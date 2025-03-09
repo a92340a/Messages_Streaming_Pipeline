@@ -1,0 +1,90 @@
+apiVersion: v1
+data:
+  init_campaigns.sql: |2+
+
+    -- create table schema
+    CREATE TABLE campaigns (
+        id VARCHAR(10) NOT NULL,
+        campaign_type VARCHAR(20),
+        channel VARCHAR(20),
+        topic VARCHAR(50),
+        started_at TIMESTAMP,
+        finished_at TIMESTAMP,
+        total_count INTEGER,
+        ab_test BOOLEAN,
+        warmup_mode BOOLEAN,
+        hour_limit INTEGER,
+        subject_length NUMERIC,
+        subject_with_personalization BOOLEAN,
+        subject_with_deadline BOOLEAN,
+        subject_with_emoji BOOLEAN,
+        subject_with_bonuses BOOLEAN,
+        subject_with_discount BOOLEAN,
+        subject_with_saleout BOOLEAN,
+        is_test BOOLEAN,
+        position INTEGER
+    );
+
+    -- import CSV file
+    COPY campaigns(id,campaign_type,channel,topic,started_at,finished_at,total_count,ab_test,warmup_mode,hour_limit,subject_length,subject_with_personalization,subject_with_deadline,subject_with_emoji,subject_with_bonuses,subject_with_discount,subject_with_saleout,is_test,position)
+    FROM '/mnt/gcs/campaigns.csv'
+    DELIMITER ','
+    CSV HEADER
+    NULL AS '';
+
+  init_client_first_purchase_date.sql: |
+    -- create table schema
+    CREATE TABLE client_first_purchase_date (
+        client_id VARCHAR(20) NOT NULL,
+        first_purchase_date DATE NOT NULL
+    );
+
+    -- import CSV file
+    COPY client_first_purchase_date(client_id, first_purchase_date)
+    FROM '/mnt/gcs/client_first_purchase_date.csv'
+    DELIMITER ','
+    CSV HEADER;
+  init_holidays.sql: |
+    -- create table schema
+    CREATE TABLE holidays (
+        date DATE NOT NULL,
+        holiday VARCHAR(50) NOT NULL
+    );
+
+    -- import CSV file
+    COPY holidays(date, holiday)
+    FROM '/mnt/gcs/holidays.csv'
+    DELIMITER ','
+    CSV HEADER;
+  init_messages.sql: |
+    -- create table schema
+    CREATE TABLE messages (
+        id VARCHAR(20) NOT NULL,
+        message_id VARCHAR(36) NOT NULL,
+        campaign_id VARCHAR(10),
+        message_type VARCHAR(20),
+        client_id VARCHAR(20),
+        channel VARCHAR(20),
+        platform VARCHAR(20),
+        email_provider VARCHAR(50),
+        date DATE,
+        sent_at TIMESTAMP,
+        is_opened BOOLEAN,
+        opened_first_time_at TIMESTAMP,
+        opened_last_time_at TIMESTAMP,
+        is_clicked BOOLEAN,
+        clicked_first_time_at TIMESTAMP,
+        clicked_last_time_at TIMESTAMP,
+        is_unsubscribed BOOLEAN,
+        unsubscribed_at TIMESTAMP,
+        is_complained BOOLEAN,
+        complained_at TIMESTAMP,
+        is_purchased BOOLEAN,
+        purchased_at TIMESTAMP,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+kind: ConfigMap
+metadata:
+  name: postgres-init-sql
+  namespace: default
