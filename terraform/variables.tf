@@ -4,6 +4,12 @@ variable "project_id" {
   description = "The project ID to host the cluster in"
 }
 
+variable "project_number" {
+  type        = string
+  default     = "365750068155"
+  description = "The project number to host the cluster in"
+}
+
 variable "region" {
   type        = string
   default     = "asia-east1"

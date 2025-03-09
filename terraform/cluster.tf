@@ -4,13 +4,24 @@ resource "google_container_cluster" "my_cluster" {
   name     = "cluster-1"
   project  = var.project_id
   location = var.location
-  initial_node_count = 1
+  initial_node_count = 2
   deletion_protection = false
 
-  
+  workload_identity_config {
+    workload_pool = "tw-rd-de-finn.svc.id.goog"
+  }
+
+  addons_config {
+    gcs_fuse_csi_driver_config {
+        enabled = true 
+      } 
+  }
+   
+
   default_snat_status {
     disabled = false
   }
+
   service_external_ips_config {
     enabled = false
   }
