@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spark-env-config
+data:
+  spark-env.sh: |
+    export SPARK_MASTER="spark://spark-master-service:7077"
