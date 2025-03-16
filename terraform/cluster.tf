@@ -1,10 +1,16 @@
-# VPC-native Clusters
+provider "kubernetes" {
+  host                   = "https://${google_container_cluster.my_cluster.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.my_cluster.master_auth.0.cluster_ca_certificate)
+}
+
+data "google_client_config" "default" {}
 
 resource "google_container_cluster" "my_cluster" {
   name     = "cluster-1"
   project  = var.project_id
   location = var.location
-  initial_node_count = 2
+  initial_node_count = 3
   deletion_protection = false
 
   workload_identity_config {
@@ -16,7 +22,6 @@ resource "google_container_cluster" "my_cluster" {
         enabled = true 
       } 
   }
-   
 
   default_snat_status {
     disabled = false
@@ -25,15 +30,18 @@ resource "google_container_cluster" "my_cluster" {
   service_external_ips_config {
     enabled = false
   }
+
   database_encryption {
     state = "DECRYPTED"
   }
+
   logging_config {
     enable_components = [
       "SYSTEM_COMPONENTS",
       "WORKLOADS",
     ]
   }
+
   monitoring_config {
     enable_components = [
       "SYSTEM_COMPONENTS",
@@ -81,11 +89,13 @@ resource "google_container_cluster" "my_cluster" {
     enabled  = false
     provider = "PROVIDER_UNSPECIFIED"
   }
+
   notification_config {
     pubsub {
       enabled = false
     }
   }
+
   secret_manager_config {
     enabled = false
   }
@@ -102,7 +112,7 @@ resource "google_container_cluster" "my_cluster" {
     labels                      = {}
     local_ssd_count             = 0
     logging_variant             = "DEFAULT"
-    machine_type                = "e2-medium"
+    machine_type                = "n2-standard-2"
     metadata = {
       "disable-legacy-endpoints" = "true"
     }
