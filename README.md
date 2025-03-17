@@ -5,7 +5,8 @@ Build a microservices-based Kubernetes infrastructure to support a Kafka streami
 
 ## Architecture
 ![Message_Streaning_Pipeline](images/Architecture_Message_Streaming_Pipeline.png)
-The project architecture revolves around seamless data processing pipelines, orchestrated by Kubernetes containers. Events originating from messages offline file are captured in a streaming data producer job, forwarded to a Kafka topic named "messages_data", processed through a micro-batch PySpark pipeline for transformation, and stored into PostgreSQL. All of the intrastructure are built using Terraform for continuous and stable deployment.
+
+The project architecture revolves around seamless data processing pipelines, orchestrated by Kubernetes containers. Events originating from messages offline file are captured in a streaming data producer job, forwarded to a Kafka topic named `messages_data`, processed through a micro-batch PySpark pipeline for transformation, and stored into PostgreSQL. All of the intrastructure are built using Terraform for continuous and stable deployment.
 
 ## Data Flow Features
 1. **Data Producer**: Scrapes data and continuously publishes it to the Kafka topic `message_data`.
@@ -33,7 +34,7 @@ Make sure your ip is included in the list of authorized network.
 
 4. (Only first time) Annotate default Kubernetes service account (KSA)
     ```shell
-    kubectl annotate serviceaccount --namespace default default iam.gke.io/gcp-service-account=365750068155-compute@developer.gserviceaccount.com
+    kubectl annotate serviceaccount --namespace default default iam.gke.io/gcp-service-account=[project_number]-compute@developer.gserviceaccount.com
     ```
 
 5. Deploy your pods/jobs with Kubernetes yaml files:
@@ -67,6 +68,7 @@ Make sure your ip is included in the list of authorized network.
     ```shell
     kubectl exec -it [postgres-pod-name] -- psql -U root -d messaging
     ```
+    Access data using SQL statements:
     ```sql
     -- Show all table
     \dt 
