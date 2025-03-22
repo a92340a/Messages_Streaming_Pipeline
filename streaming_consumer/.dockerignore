@@ -1,0 +1,6 @@
+.venv_consumer/
+.git
+.env
+*.pyc
+*.pyo
+__pycache__
