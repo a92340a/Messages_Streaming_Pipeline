@@ -1,27 +1,6 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: data-producer
-spec:
-  template:
-    metadata:
-      labels:
-        app: data-producer
-    spec:
-      containers:
-        - name: data-producer
-          image: a92340a/message_data_producer:0.4
-          env:
-            - name: FILE_PATH
-              value: "gs://messages-streaming-project-data/messages.csv"
-            - name: BOOTSTRAP_SERVERS
-              value: "kafka-service:9092"
-      restartPolicy: Never
-  backoffLimit: 4
----
-apiVersion: batch/v1
-kind: Job
-metadata:
   name: data-consumer
 spec:
   template:
@@ -29,12 +8,13 @@ spec:
       labels:
         app: data-consumer
     spec:
+      # nodeSelector:
+      #   cloud.google.com/gke-nodepool: spark-pool
       securityContext:
-        runAsUser: 0 #65534
-        # runAsGroup: 65534
+        runAsUser: 0
       containers:
         - name: data-consumer
-          image: a92340a/message_data_consumer:0.9
+          image: a92340a/message_data_consumer:1.0
           command: ["/opt/bitnami/spark/bin/spark-submit"]
           args:
             - "--master"
@@ -45,8 +25,22 @@ spec:
             - "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,com.google.cloud.bigdataoss:gcs-connector:hadoop3-2.2.5"
             - "--conf"
             - "spark.jars.ivy=/tmp/.ivy2"
+            # - "--conf"
+            # - "spark.kafka.bootstrap.servers=$()"
             - "--conf"
-            - "spark.driver.host=$(hostname -i)"
+            - "spark.driver.bindAddress=0.0.0.0"
+            - "--conf"
+            - "spark.dynamicAllocation.enabled=false"
+            - "--conf"
+            - "spark.executor.instances=1"
+            - "--conf"
+            - "spark.shuffle.service.enabled=true"
+            - "--conf"
+            - "spark.kubernetes.node.selector.spark-role=executor"
+            - "--conf"
+            - "spark.executor.cores=1"
+            - "--conf"
+            - "spark.executor.memory=2g"
             - "local:///app/data_consumer.py"
           env:
             - name: BOOTSTRAP_SERVERS
@@ -56,7 +50,7 @@ spec:
             - name: HADOOP_CONF_DIR
               value: "/etc/hadoop/conf"
           envFrom:
-            - secretRef:
-                name: postgres-secrets
+            - configMapRef:
+                name: postgres-config
       restartPolicy: Never
   backoffLimit: 4
