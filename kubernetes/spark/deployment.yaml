@@ -12,6 +12,13 @@ spec:
       labels:
         app: spark-top
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: spark-pool
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "spark"
+          effect: "NoSchedule"
       containers:
         - name: spark-top
           image: a92340a/spark-base:0.3
@@ -21,21 +28,24 @@ spec:
           volumeMounts:
             - mountPath: /opt/workspace
               name: workspace-volume
-            - mountPath: /app
-              name: app-volume # 'data_consumer.py'
+            # - mountPath: /app
+            #   name: app-volume # 'data_consumer.py'
+          envFrom:
+            - configMapRef:
+                name: postgres-config
           env:
             - name: SPARK_MODE
               value: master
-          envFrom:
-            - secretRef:
-                name: postgres-secrets
+          # envFrom:
+          #   - secretRef:
+          #       name: postgres-secrets
 
       volumes:
         - name: workspace-volume
           emptyDir: {}
-        - name: app-volume
-          configMap:
-            name: data-consumer-config # 'data_consumer.py'
+        # - name: app-volume
+        #   configMap:
+        #     name: data-consumer-config # 'data_consumer.py'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -51,6 +61,13 @@ spec:
       labels:
         app: spark-bottom
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: spark-pool
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "spark"
+          effect: "NoSchedule"
       containers:
         - name: spark-bottom
           image: a92340a/spark-base:0.3
@@ -64,9 +81,12 @@ spec:
             - "spark-class"
             - "org.apache.spark.deploy.worker.Worker"
             - "spark://spark-master-service:7077"
+          # envFrom:
+          #   - secretRef:
+          #       name: postgres-secrets
           envFrom:
-            - secretRef:
-                name: postgres-secrets
+            - configMapRef:
+                name: postgres-config
           env:
             - name: SPARK_MODE
               value: worker
@@ -84,14 +104,14 @@ spec:
             - name: spark-env
               mountPath: /opt/bitnami/spark/conf/spark-env.sh
               subPath: spark-env.sh
-            - mountPath: /app
-              name: app-volume #  'data_consumer.py'
+            # - mountPath: /app
+            #   name: app-volume #  'data_consumer.py'
       volumes:
         - name: workspace-volume
           emptyDir: {}
         - name: spark-env
           configMap:
             name: spark-env-config
-        - name: app-volume
-          configMap:
-            name: data-consumer-config # 'data_consumer.py'
+        # - name: app-volume
+        #   configMap:
+        #     name: data-consumer-config # 'data_consumer.py'

@@ -1,6 +1,6 @@
 resource "google_container_node_pool" "my_nodes" {
   project    = var.project_id
-  name       = "default-pool"
+  name       = "spark-pool"
   cluster    = google_container_cluster.my_cluster.id
   initial_node_count = 3
   location   = var.location
@@ -20,5 +20,4 @@ resource "google_container_node_pool" "my_nodes" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
   }
-  depends_on = [google_container_cluster.my_cluster]
 }

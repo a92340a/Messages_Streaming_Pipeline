@@ -8,7 +8,7 @@ import psycopg2
 BOOTSTRAP_SERVERS = os.getenv("BOOTSTRAP_SERVERS", "kafka-service:9092")
 TOPIC = os.getenv("TOPIC", "message_data")
 
-POSTGRES_DBNAME = os.getenv("POSTGRES_DBNAME")
+POSTGRES_DBNAME = os.getenv("POSTGRES_DB")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
@@ -30,7 +30,7 @@ df = (
     spark.readStream.format("kafka")
     .option("kafka.bootstrap.servers", BOOTSTRAP_SERVERS)
     .option("subscribe", TOPIC)
-    .option("startingOffsets", "latest")
+    .option("startingOffsets", "earliest")  # latest
     .load()
 )
 
@@ -84,8 +84,6 @@ df_cleaned = df_decode.filter(col("message_id").isNotNull()).drop(
     "blocked_at",
 )
 
-# query = df_cleaned.writeStream.format("console").outputMode("append").start()
-
 
 def write_to_postgres(batch_df, batch_id):
     connection = None
@@ -98,7 +96,8 @@ def write_to_postgres(batch_df, batch_id):
             password=POSTGRES_PASSWORD,
         )
         cursor = connection.cursor()
-        for row in batch_df.collect():
+
+        for row in batch_df.rdd.collect():
             insert_query = """
             INSERT INTO messages (id, message_id, campaign_id, message_type, client_id, channel, platform, email_provider, date, sent_at, is_opened, opened_first_time_at, opened_last_time_at, is_clicked, clicked_first_time_at, clicked_last_time_at, is_unsubscribed, unsubscribed_at, is_complained, complained_at, is_purchased, purchased_at, created_at, updated_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -141,6 +140,7 @@ def write_to_postgres(batch_df, batch_id):
 
 
 # write to PostgreSQL
+# query = df_cleaned.writeStream.format("console").outputMode("append").start()
 query = df_cleaned.writeStream.foreachBatch(write_to_postgres).outputMode("append").start()
 
 
