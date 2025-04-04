@@ -28,24 +28,15 @@ spec:
           volumeMounts:
             - mountPath: /opt/workspace
               name: workspace-volume
-            # - mountPath: /app
-            #   name: app-volume # 'data_consumer.py'
           envFrom:
             - configMapRef:
                 name: postgres-config
           env:
             - name: SPARK_MODE
               value: master
-          # envFrom:
-          #   - secretRef:
-          #       name: postgres-secrets
-
       volumes:
         - name: workspace-volume
           emptyDir: {}
-        # - name: app-volume
-        #   configMap:
-        #     name: data-consumer-config # 'data_consumer.py'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +62,13 @@ spec:
       containers:
         - name: spark-bottom
           image: a92340a/spark-base:0.3
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "1"
+            limits:
+              memory: "8Gi"
+              cpu: "1"
           securityContext:
             runAsUser: 0
           ports:
@@ -81,9 +79,6 @@ spec:
             - "spark-class"
             - "org.apache.spark.deploy.worker.Worker"
             - "spark://spark-master-service:7077"
-          # envFrom:
-          #   - secretRef:
-          #       name: postgres-secrets
           envFrom:
             - configMapRef:
                 name: postgres-config
@@ -93,7 +88,7 @@ spec:
             - name: SPARK_WORKER_CORES
               value: "1"
             - name: SPARK_WORKER_MEMORY
-              value: "2g"
+              value: "8g"
             - name: SPARK_MASTER_HOST
               value: spark-master-service
             - name: SPARK_MASTER
@@ -104,14 +99,9 @@ spec:
             - name: spark-env
               mountPath: /opt/bitnami/spark/conf/spark-env.sh
               subPath: spark-env.sh
-            # - mountPath: /app
-            #   name: app-volume #  'data_consumer.py'
       volumes:
         - name: workspace-volume
           emptyDir: {}
         - name: spark-env
           configMap:
             name: spark-env-config
-        # - name: app-volume
-        #   configMap:
-        #     name: data-consumer-config # 'data_consumer.py'

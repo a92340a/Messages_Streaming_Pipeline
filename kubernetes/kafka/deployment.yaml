@@ -65,6 +65,5 @@ spec:
           env:
             - name: ZOOKEEPER_CLIENT_PORT
               value: "2181"
-
             - name: ZOOKEEPER_TICK_TIME
               value: "2000"
