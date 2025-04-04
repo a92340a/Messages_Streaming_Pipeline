@@ -14,7 +14,7 @@ resource "google_container_node_pool" "my_nodes" {
   }
 
   node_config {
-    machine_type = "n2-standard-2"
+    machine_type = "n2-standard-4"
     service_account = "default"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"

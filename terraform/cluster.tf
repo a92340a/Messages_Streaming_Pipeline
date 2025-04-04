@@ -10,11 +10,11 @@ resource "google_container_cluster" "my_cluster" {
   name     = "cluster-1"
   project  = var.project_id
   location = var.location
-  initial_node_count = 3
+  initial_node_count = 1
   deletion_protection = false
 
   workload_identity_config {
-    workload_pool = "tw-rd-de-finn.svc.id.goog"
+    workload_pool = "${var.project_id}.svc.id.goog"
   }
 
   addons_config {
@@ -82,6 +82,11 @@ resource "google_container_cluster" "my_cluster" {
     cidr_blocks {
       cidr_block   = "180.177.8.10/32"
       display_name = "home"
+    }
+
+    cidr_blocks {
+      cidr_block   = "220.137.87.62/32"
+      display_name = "taoyuan home"
     }
   }
 
