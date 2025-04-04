@@ -1,12 +1,12 @@
 variable "project_id" {
   type        = string
-  default     = "tw-rd-de-finn"
+  default     = "tw-rd-de-data-solution"
   description = "The project ID to host the cluster in"
 }
 
 variable "project_number" {
   type        = string
-  default     = "365750068155"
+  default     = "225715111773"
   description = "The project number to host the cluster in"
 }
 

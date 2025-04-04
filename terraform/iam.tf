@@ -13,16 +13,6 @@ resource "kubernetes_service_account" "spark" {
     name      = "spark"
     namespace = "default"
   }
+  depends_on = [google_container_cluster.my_cluster]
 }
-
-# resource "kubernetes_service_account" "default" {
-#   metadata {
-#     name      = "default"
-#     namespace = "default"
-#     annotations = {
-#       "iam.gke.io/gcp-service-account" = "${var.project_number}-compute@developer.gserviceaccount.com"
-#     }
-#   }
-#   depends_on = [google_container_cluster.my_cluster]
-# }
 

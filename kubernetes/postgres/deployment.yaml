@@ -39,3 +39,36 @@ spec:
         - name: init-sql-volume
           configMap:
             name: postgres-init-sql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  labels:
+    app: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4
+          envFrom:
+            - configMapRef:
+                name: pgadmin-secret
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: pgadmin-config
+              mountPath: /pgadmin4/servers.json
+              subPath: servers.json
+      volumes:
+        - name: pgadmin-config
+          configMap:
+            name: pgadmin-config
