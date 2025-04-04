@@ -30,7 +30,8 @@ df = (
     spark.readStream.format("kafka")
     .option("kafka.bootstrap.servers", BOOTSTRAP_SERVERS)
     .option("subscribe", TOPIC)
-    .option("startingOffsets", "earliest")  # latest
+    .option("checkpointLocation", "/mnt/checkpoints/message-streaming-job/")
+    .option("startingOffsets", "earliest")
     .load()
 )
 
