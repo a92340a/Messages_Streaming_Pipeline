@@ -14,7 +14,7 @@ spec:
         runAsUser: 0
       containers:
         - name: data-consumer
-          image: a92340a/message_data_consumer:1.0
+          image: a92340a/message_data_consumer:1.1
           command: ["/opt/bitnami/spark/bin/spark-submit"]
           args:
             - "--master"
@@ -48,5 +48,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: postgres-config
+          volumeMounts:
+            - name: checkpoint-volume
+              mountPath: /mnt/checkpoints/
+      volumes:
+        - name: checkpoint-volume
+          persistentVolumeClaim:
+            claimName: checkpoint-pvc
       restartPolicy: Never
   backoffLimit: 4
