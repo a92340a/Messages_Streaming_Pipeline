@@ -2,7 +2,7 @@
 CREATE TABLE messages (
     id VARCHAR(20) NOT NULL,
     message_id VARCHAR(36) NOT NULL,
-    campaign_id VARCHAR(10),
+    campaign_id VARCHAR(10) NOT NULL,
     message_type VARCHAR(20),
     client_id VARCHAR(20),
     channel VARCHAR(20),
@@ -23,5 +23,6 @@ CREATE TABLE messages (
     is_purchased BOOLEAN,
     purchased_at TIMESTAMP,
     created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_id_message_campaign UNIQUE (id, message_id, campaign_id)
 );

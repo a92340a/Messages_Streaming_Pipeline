@@ -102,6 +102,8 @@ def write_to_postgres(batch_df, batch_id):
             insert_query = """
             INSERT INTO messages (id, message_id, campaign_id, message_type, client_id, channel, platform, email_provider, date, sent_at, is_opened, opened_first_time_at, opened_last_time_at, is_clicked, clicked_first_time_at, clicked_last_time_at, is_unsubscribed, unsubscribed_at, is_complained, complained_at, is_purchased, purchased_at, created_at, updated_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id, message_id, campaign_id)
+            DO NOTHING;
             """
             cursor.execute(
                 insert_query,
@@ -141,7 +143,6 @@ def write_to_postgres(batch_df, batch_id):
 
 
 # write to PostgreSQL
-# query = df_cleaned.writeStream.format("console").outputMode("append").start()
 query = df_cleaned.writeStream.foreachBatch(write_to_postgres).outputMode("append").start()
 
 
