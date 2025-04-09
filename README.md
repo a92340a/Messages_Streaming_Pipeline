@@ -10,18 +10,20 @@ The project architecture revolves around seamless data processing pipelines, orc
 
 ## Data Source
 This dataset in this project from [Kaggle - E-commerce multichannel direct messaging](https://www.kaggle.com/datasets/mkechinov/direct-messaging) is about multi-channel messages of medium sized online store for 2 years.
-- Main table: `holidays` with some information:
-    1. Campaign
-    2. Channel
-        - email, web push, mobile push, SMS.
-    3. Type
-        1. Bulk campaigns are sent for sale outs and before holidays to stimulate sales and bring back customers.
-        2. Trigger messages are sent automatically based on user's behavior. 
-        3. Transactional messages are used for some kind of information delivery process, such as: order delivery status changed.
-    4. Opened (when)
-    5. Clicked (when)
-    6. Purchase
-    7. Etc. See attached dataset for detailed info of every property    
+Main table: `holidays` with some information:
+1. Campaign
+2. Channel
+    - email, web push, mobile push, SMS.
+3. Type
+    1. Bulk campaigns are sent for sale outs and before holidays to stimulate sales and bring back customers.
+    2. Trigger messages are sent automatically based on user's behavior. 
+    3. Transactional messages are used for some kind of information delivery process, such as: order delivery status changed.
+4. Opened (when)
+5. Clicked (when)
+6. Purchase
+7. Etc. See attached dataset for detailed info of every property    
+
+    ![messaging_ERD](images/messaging_ERD.png)
 
 ## Data Flow 
 1. **Data Producer**: Scrapes data and continuously publishes it to the Kafka topic `message_data`.
