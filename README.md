@@ -8,6 +8,21 @@ Build a microservices-based Kubernetes infrastructure to support a Kafka streami
 
 The project architecture revolves around seamless data processing pipelines, orchestrated by Kubernetes containers. Events originating from messages offline file are captured in a streaming data producer job, forwarded to a Kafka topic named `messages_data`, processed through a micro-batch PySpark pipeline for transformation, and stored into PostgreSQL. All of the intrastructure are built using Terraform for continuous and stable deployment.
 
+## Data Source
+This dataset in this project from [Kaggle - E-commerce multichannel direct messaging](https://www.kaggle.com/datasets/mkechinov/direct-messaging) is about multi-channel messages of medium sized online store for 2 years.
+- Main table: `holidays` with some information:
+    1. Campaign
+    2. Channel
+        - email, web push, mobile push, SMS.
+    3. Type
+        1. Bulk campaigns are sent for sale outs and before holidays to stimulate sales and bring back customers.
+        2. Trigger messages are sent automatically based on user's behavior. 
+        3. Transactional messages are used for some kind of information delivery process, such as: order delivery status changed.
+    4. Opened (when)
+    5. Clicked (when)
+    6. Purchase
+    7. Etc. See attached dataset for detailed info of every property    
+
 ## Data Flow 
 1. **Data Producer**: Scrapes data and continuously publishes it to the Kafka topic `message_data`.
 2. **Kafka Message Queue**: Decouples the pipeline using Kafka as a message queue, ensuring flexibility and stability for downstream consumers.
